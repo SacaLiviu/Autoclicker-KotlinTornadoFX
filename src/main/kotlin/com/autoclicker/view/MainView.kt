@@ -149,14 +149,16 @@ class MainView : View("Autoclicker") {
                     GlobalScope.launch {
                         try {
                             disableButtons()
+                            if(!clicksTextField.disableProperty().get())
+                                clicksTextField.disableProperty().set(true)
                             disableLogger()
                             GlobalScreen.registerNativeHook()
                             val mouse = GlobalMouseListener(controller)
                             GlobalScreen.addNativeMouseListener(mouse)
                             while (true)
-                                if (controller.checkMouseSwitch)
-                                    break
+                                if (controller.checkMouseSwitch) break
                             enableButtons()
+                            enableBuggedButton()
                             GlobalScreen.removeNativeMouseListener(mouse)
                             GlobalScreen.unregisterNativeHook()
 
@@ -216,6 +218,7 @@ class MainView : View("Autoclicker") {
                 val keyboard=GlobalKeyListener(controller)
                 GlobalScreen.addNativeKeyListener(keyboard)
                 disableButtons()
+                disableBuggedButton()
                 disableLogger()
                 setAll()
                 GlobalScope.launch {
@@ -223,11 +226,14 @@ class MainView : View("Autoclicker") {
                     GlobalScreen.removeNativeKeyListener(keyboard)
                     GlobalScreen.unregisterNativeHook()
                     enableButtons()
+                    enableBuggedButton()
                 }
             }
             shortcut("F3")
         }
     }
+
+
 
 
     private fun disableLogger() {
@@ -240,7 +246,6 @@ class MainView : View("Autoclicker") {
         startButton.disableProperty().set(true)
         pickButton.disableProperty().set(true)
         intervalTextField.disableProperty().set(true)
-        clicksTextField.disableProperty().set(true)
         clickDreaptaCheckbox.disableProperty().set(true)
         clickStangaCheckbox.disableProperty().set(true)
         infinitCheckbox.disableProperty().set(true)
@@ -252,12 +257,18 @@ class MainView : View("Autoclicker") {
         startButton.disableProperty().set(false)
         pickButton.disableProperty().set(false)
         intervalTextField.disableProperty().set(false)
-        clicksTextField.disableProperty().set(false)
         clickDreaptaCheckbox.disableProperty().set(false)
         clickStangaCheckbox.disableProperty().set(false)
         infinitCheckbox.disableProperty().set(false)
         xPosTextField.disableProperty().set(false)
         yPosTextField.disableProperty().set(false)
+    }
+
+    private fun enableBuggedButton(){
+        clicksTextField.disableProperty().set(false)
+    }
+    private fun disableBuggedButton(){
+        clicksTextField.disableProperty().set(true)
     }
 
     private fun setAll(){
@@ -274,8 +285,7 @@ class MainView : View("Autoclicker") {
         controller.clickInfinit = infinitCheckbox.isSelected
     }
     init {
-        addStageIcon(Image("file:///C:\\Users\\kiv\\Desktop\\Oficial\\tornadofx-gradle-project\\src\\main\\kotlin\\com\\example\\AutoClickerIcon.png"))
-
+        addStageIcon(Image("file:///AutoClickerIcon.png"))
     }
 }
 
